@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cshd5bk5u60sw"]
+[gd_scene load_steps=9 format=3 uid="uid://cshd5bk5u60sw"]
 
 [ext_resource type="Material" uid="uid://c0yoauabej2l8" path="res://Assets/Materials/Debug/GrayBoxTiles.tres" id="1_2f1jf"]
-[ext_resource type="Script" path="res://Scripts/Node/CharacterControllerFirstPerson.cs" id="1_oxfav"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/CharacterControllerFirstPerson.cs" id="2_ehjmd"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/PlayerCharacterStats.cs" id="3_d6yha"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iykb5"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -18,6 +19,10 @@ glow_enabled = true
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4i7st"]
 radius = 0.3
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qa8m4"]
+radius = 0.3
+height = 1.2
 
 [node name="World" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00691223, 0.00987053, -0.0269251)
@@ -40,11 +45,19 @@ shadow_enabled = true
 environment = SubResource("Environment_1inpn")
 
 [node name="Character" type="CharacterBody3D" parent="." groups=["Player"]]
-script = ExtResource("1_oxfav")
+script = ExtResource("2_ehjmd")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Character"]
+[node name="Stats" type="Node3D" parent="Character"]
+script = ExtResource("3_d6yha")
+
+[node name="CollisionShapeStanding" type="CollisionShape3D" parent="Character"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_4i7st")
+
+[node name="CollisionShapeCrouching" type="CollisionShape3D" parent="Character"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("CapsuleShape3D_qa8m4")
+disabled = true
 
 [node name="CameraPivotYaw" type="Node3D" parent="Character"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
