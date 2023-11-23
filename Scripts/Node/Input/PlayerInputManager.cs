@@ -84,9 +84,11 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     {
         if (_isCrouchToggle)
         {
-            if (Godot.Input.IsActionPressed("Crouch"))
-                Crouch = 1.0f;
-            else Crouch = 0.0f;
+            if (Godot.Input.IsActionJustPressed("Crouch"))
+            {
+                if (Crouch <= 0.0f) Crouch = 1.0f;
+                else ResetCrouch();
+            } 
         }
         else
         {
@@ -97,4 +99,6 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     public void SetCrouchToggle(bool value) { _isCrouchToggle = value; }
 
     public bool IsCrouchToggle() => _isCrouchToggle;
+
+    public void ResetCrouch() => Crouch = 0.0f;
 }
