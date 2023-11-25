@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://cshd5bk5u60sw"]
+[gd_scene load_steps=10 format=3 uid="uid://cshd5bk5u60sw"]
 
 [ext_resource type="Material" uid="uid://c0yoauabej2l8" path="res://Assets/Materials/Debug/GrayBoxTiles.tres" id="1_2f1jf"]
 [ext_resource type="Script" path="res://Scripts/Node/Character/CharacterControllerFirstPerson.cs" id="2_ehjmd"]
 [ext_resource type="Script" path="res://Scripts/Node/Character/PlayerCharacterStats.cs" id="3_d6yha"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/FirstPersonCamera.cs" id="4_dd153"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iykb5"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -61,6 +62,7 @@ disabled = true
 
 [node name="CameraPivotYaw" type="Node3D" parent="Character"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+script = ExtResource("4_dd153")
 
 [node name="CameraPivotPitch" type="Node3D" parent="Character/CameraPivotYaw"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.15)

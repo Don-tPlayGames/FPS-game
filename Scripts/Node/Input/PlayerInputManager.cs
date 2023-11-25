@@ -6,6 +6,8 @@ namespace FPSgame.Scripts.Node.Input;
 
 public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICameraInputMap
 {
+    //TODO: optimize mouse input values update, if possible.
+    
     private static PlayerInputManager _instance;
 
     public static PlayerInputManager Default
@@ -35,6 +37,9 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     public float MouseX { get; private set; }
     public float MouseY { get; private set; }
 
+    private Vector2 _mousePositionPrev;
+    private Vector2 _mousePositionCur;
+
     private bool _isCrouchToggle = true;
 
     public override void _Ready()
@@ -44,6 +49,7 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
 
     public override void _PhysicsProcess(double delta)
     {
+        UpdateMouseInput();
         UpdateMovementInput();
     }
 
@@ -51,15 +57,28 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     {
         if (@event is InputEventMouseMotion mouseMotionEvent)
         {
-            Vector2 input = mouseMotionEvent.Relative;
-            MouseX = input.X;
-            MouseY = input.Y;
+            _mousePositionCur = mouseMotionEvent.Relative;
         }
     }
 
     private void Init()
     {
         Default = this;
+    }
+
+    private void UpdateMouseInput()
+    {
+        if (_mousePositionCur != _mousePositionPrev)
+        {
+            MouseX = _mousePositionCur.X;
+            MouseY = _mousePositionCur.Y;
+            _mousePositionPrev = _mousePositionCur;
+        }
+        else
+        {
+            MouseX = 0;
+            MouseY = 0;
+        }
     }
 
     private void UpdateMovementInput()
