@@ -16,15 +16,22 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 	
 	private IMovementInputMap _input;
 
+	//TODO: make a layer of abstraction for camera.
+	private FirstPersonCamera _camera;
+
 	private Vector2 _horizontalVelocity;
 	private double _jumpCooldownTimer;
 
 	public override void _Ready()
 	{
+		//TODO: find a way to get rid of node naming dependencies.
+		
 		_characterStats = GetNode<PlayerCharacterStats>("Stats");
 		
 		_input = PlayerInputManager.Default;
 		_input.Jump += DoJump;
+
+		_camera = GetNode<FirstPersonCamera>("CameraPivotYaw");
 	}
 
 	public override void _PhysicsProcess(double deltaTime)
@@ -37,8 +44,14 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 
 	private void HandleVelocity(double deltaTime)
 	{
+		//TODO: code organization.
+		
 		Vector3 inputDirectionAbsolute = new Vector3(_input.Horizontal, 0, _input.Vertical);
-		Vector3 inputDirectionRelative = (Transform.Basis * inputDirectionAbsolute).Normalized();
+		
+		float cameraGlobalRotationY = Vector3.Forward.SignedAngleTo(_camera.LookVector.ToVector3Horizontal(), Vector3.Up);
+		Vector3 inputDirectionRelative = (Transform.Basis * inputDirectionAbsolute)
+			.Normalized()
+			.Rotated(Vector3.Up, cameraGlobalRotationY);
 
 		Vector2 targetHorizontalVelocity = inputDirectionRelative.ToVector2Horizontal() * _characterStats.BaseSpeed;
 		if (_input.Sprint > 0.0f)
@@ -50,7 +63,9 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 					pim.ResetCrouch();
 		}
 		else if (_input.Crouch > 0.0f)
+		{
 			targetHorizontalVelocity *= _characterStats.CrouchSpeedMul;
+		}
 		
 		_horizontalVelocity = _horizontalVelocity.Lerp(
 			to: targetHorizontalVelocity,
