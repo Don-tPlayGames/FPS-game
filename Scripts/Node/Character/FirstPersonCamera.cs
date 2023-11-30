@@ -12,6 +12,8 @@ public partial class FirstPersonCamera : Node3D
     [Export] private float PitchMin = -85.0f;
     [Export] private float PitchMax = 85.0f;
 
+    [Export] private Vector3 PitchJointOffset = new(0.0f, 0.2f, 0.15f);
+
     public Vector3 LookVector => -_camera.GlobalTransform.Basis.Z;
 
     private Node3D _pitchJoint;
@@ -36,5 +38,11 @@ public partial class FirstPersonCamera : Node3D
         float targetPitch = _pitchJoint.Rotation.X - _input.MouseY * SensitivityY * (float)delta;
         targetPitch = Mathf.Clamp(targetPitch, Mathf.DegToRad(PitchMin), Mathf.DegToRad(PitchMax));
         _pitchJoint.Rotation = new Vector3(targetPitch, 0, 0);
+    }
+
+    public void SetEyeHeight(float value)
+    {
+        float targetHeight = value - PitchJointOffset.Y;
+        Position = new Vector3(Position.X, targetHeight, Position.Z);
     }
 }

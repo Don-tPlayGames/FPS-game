@@ -11,9 +11,14 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 {
 	[Export] private float MovementResponsiveness = 10.0f;
 	[Export] private float InAirMovementResponsiveness = 0.5f;
+
+	[Export] private float EyeHeightNormal = 1.65f;
+	[Export] private float EyeHeightCrouch = 0.75f;
+	[Export] private float EyeHeightCrawl = 0.3f;
 	
 	private ICharacterPhysicalStats _characterStats;
-	
+	private CharacterStateMachine _stateMachine;
+
 	private IMovementInputMap _input;
 
 	//TODO: make a layer of abstraction for camera.
@@ -27,6 +32,7 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 		//TODO: find a way to get rid of node naming dependencies.
 		
 		_characterStats = GetNode<PlayerCharacterStats>("Stats");
+		_stateMachine = GetNode<CharacterStateMachine>("StateMachine");
 		
 		_input = PlayerInputManager.Default;
 		_input.Jump += DoJump;
@@ -38,13 +44,16 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 	{
 		TickGravity(deltaTime);
 		TickJump(deltaTime);
-		HandleVelocity(deltaTime);
+
+		ApplyHorizontalVelocity(deltaTime);
+		
 		MoveAndSlide();
 	}
 
-	private void HandleVelocity(double deltaTime)
+	private void ApplyHorizontalVelocity(double deltaTime)
 	{
-		//TODO: code organization.
+		if (_stateMachine.CurrentState is not CharacterStateBasicMovement state)
+			return;
 		
 		Vector3 inputDirectionAbsolute = new Vector3(_input.Horizontal, 0, _input.Vertical);
 		
@@ -52,25 +61,19 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 		Vector3 inputDirectionRelative = (Transform.Basis * inputDirectionAbsolute)
 			.Normalized()
 			.Rotated(Vector3.Up, cameraGlobalRotationY);
-
-		Vector2 targetHorizontalVelocity = inputDirectionRelative.ToVector2Horizontal() * _characterStats.BaseSpeed;
+		
+		Vector2 targetHorizontalVelocity = inputDirectionRelative.ToVector2Horizontal()
+		                                   * _characterStats.BaseSpeed * state.GetSpeedMultiplier();
+		
 		if (_input.Sprint > 0.0f)
 		{
 			targetHorizontalVelocity *= _characterStats.SprintSpeedMul;
-			
-			if (_input is PlayerInputManager pim)
-				if (pim.IsCrouchToggle())
-					pim.ResetCrouch();
-		}
-		else if (_input.Crouch > 0.0f)
-		{
-			targetHorizontalVelocity *= _characterStats.CrouchSpeedMul;
 		}
 		
 		_horizontalVelocity = _horizontalVelocity.Lerp(
 			to: targetHorizontalVelocity,
 			weight: (float)deltaTime * (IsOnFloor() ? MovementResponsiveness : InAirMovementResponsiveness));
-
+		
 		Velocity = new Vector3(_horizontalVelocity.X, Velocity.Y, _horizontalVelocity.Y);
 	}
 
@@ -90,6 +93,9 @@ public partial class CharacterControllerFirstPerson : CharacterBody3D
 
 	private void DoJump()
 	{
+		if(_stateMachine.CurrentState is not CharacterState { CanJump: true })
+			return;
+		
 		if (_jumpCooldownTimer <= 0.0f && IsOnFloor())
 		{
 			Velocity = new Vector3(Velocity.X, _characterStats.JumpVelocity, Velocity.Z);

@@ -8,7 +8,9 @@ public interface IMovementInputMap
     float Horizontal { get; }
     
     float Sprint { get; }
-    float Crouch { get; }
+
+    event Action Crouch;
+    event Action Crawl;
     
     event Action Jump;
 }

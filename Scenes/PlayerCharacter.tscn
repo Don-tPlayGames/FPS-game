@@ -1,0 +1,65 @@
+[gd_scene load_steps=10 format=3 uid="uid://b8ogtusowotd6"]
+
+[ext_resource type="Script" path="res://Scripts/Node/Character/CharacterControllerFirstPerson.cs" id="1_hs3su"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/PlayerCharacterStats.cs" id="2_xl18k"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/FirstPersonCamera.cs" id="3_trlgo"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/CharacterStateStanding.cs" id="4_v0yfo"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/CharacterStateCrouching.cs" id="5_wm0kb"]
+[ext_resource type="Script" path="res://Scripts/Node/Character/CharacterStateCrawling.cs" id="6_2gdmp"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4i7st"]
+radius = 0.3
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qa8m4"]
+radius = 0.3
+height = 1.2
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_601oh"]
+radius = 0.3
+height = 0.6
+
+[node name="Character" type="CharacterBody3D" groups=["Player"]]
+script = ExtResource("1_hs3su")
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("2_xl18k")
+
+[node name="CollisionShapeStanding" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_4i7st")
+
+[node name="CollisionShapeCrouching" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("CapsuleShape3D_qa8m4")
+disabled = true
+
+[node name="CollisionShapeCrawling" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+shape = SubResource("CapsuleShape3D_601oh")
+disabled = true
+
+[node name="CameraPivotYaw" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+script = ExtResource("3_trlgo")
+
+[node name="CameraPivotPitch" type="Node3D" parent="CameraPivotYaw"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.15)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivotYaw/CameraPivotPitch"]
+
+[node name="StateMachine" type="Node" parent="."]
+
+[node name="Standing" type="Node" parent="StateMachine"]
+script = ExtResource("4_v0yfo")
+CollisionShape = NodePath("../../CollisionShapeStanding")
+SpeedMultiplier = 1.0
+
+[node name="Crouching" type="Node" parent="StateMachine"]
+script = ExtResource("5_wm0kb")
+
+[node name="Crawling" type="Node" parent="StateMachine"]
+script = ExtResource("6_2gdmp")
+
+[node name="Mounting" type="Node" parent="StateMachine"]
+
+[node name="Inactive" type="Node" parent="StateMachine"]

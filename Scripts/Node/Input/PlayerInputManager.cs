@@ -30,7 +30,9 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     public float Horizontal { get; private set; }
     
     public float Sprint { get; private set; }
-    public float Crouch { get; private set; }
+
+    public event Action Crouch;
+    public event Action Crawl;
     
     public event Action Jump;
     
@@ -39,8 +41,6 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
 
     private Vector2 _mousePositionPrev;
     private Vector2 _mousePositionCur;
-
-    private bool _isCrouchToggle = true;
 
     public override void _Ready()
     {
@@ -87,7 +87,9 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
 
         Sprint = Godot.Input.GetActionStrength("Sprint");
 
-        UpdateCrouch();
+        if (Godot.Input.IsActionJustPressed("Crouch")) { Crouch?.Invoke(); }
+        
+        if (Godot.Input.IsActionJustPressed("Crawl")) { Crawl?.Invoke(); }
         
         if (Godot.Input.IsActionJustPressed("Jump")) { Jump?.Invoke(); }
     }
@@ -98,26 +100,4 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
         Vertical = movementInput.Y;
         Horizontal = movementInput.X;
     }
-
-    private void UpdateCrouch()
-    {
-        if (_isCrouchToggle)
-        {
-            if (Godot.Input.IsActionJustPressed("Crouch"))
-            {
-                if (Crouch <= 0.0f) Crouch = 1.0f;
-                else ResetCrouch();
-            } 
-        }
-        else
-        {
-            Crouch = Godot.Input.GetActionStrength("Crouch");
-        }
-    }
-
-    public void SetCrouchToggle(bool value) { _isCrouchToggle = value; }
-
-    public bool IsCrouchToggle() => _isCrouchToggle;
-
-    public void ResetCrouch() => Crouch = 0.0f;
 }

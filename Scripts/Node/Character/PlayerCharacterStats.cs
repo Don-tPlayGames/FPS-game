@@ -11,6 +11,7 @@ public partial class PlayerCharacterStats : Godot.Node, ICharacterBodyStats, ICh
     [Export] public float BaseSpeed { get; internal set;  } = 5.0f;
     public float SprintSpeedMul { get; internal set; } = 1.4f;
     public float CrouchSpeedMul { get; internal set; } = 0.5f;
+    public float CrawlSpeedMul { get; internal set; } = 0.3f;
 
 
     [Export] private float JumpHeight { get; set; } = 0.7f;
