@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=3 uid="uid://bidhh1ve7yvpn"]
+
+[ext_resource type="Script" path="res://Scenes/UIMainMenu/MainMenu.cs" id="1_fiisk"]
+[ext_resource type="PackedScene" uid="uid://bagexjxta1jrv" path="res://Scenes/Multiplayer.tscn" id="2_pc7yu"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fiisk")
+
+[node name="MultiplayerButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 464.0
+offset_top = 216.0
+offset_right = 609.0
+offset_bottom = 271.0
+scale = Vector2(1.53438, 1.21872)
+text = "Multiplayer"
+
+[node name="NewGameButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 464.0
+offset_top = 128.0
+offset_right = 681.0
+offset_bottom = 199.0
+text = "New Game"
+
+[node name="ContinueGameButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 464.0
+offset_top = 304.0
+offset_right = 681.0
+offset_bottom = 375.0
+text = "Continue Game"
+
+[node name="SettingsButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 464.0
+offset_top = 400.0
+offset_right = 681.0
+offset_bottom = 471.0
+text = "Settings"
+
+[node name="Control" parent="." instance=ExtResource("2_pc7yu")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="MultiplayerButton" to="." method="OnPressedMultiplayerButton"]
+[connection signal="pressed" from="NewGameButton" to="." method="OnNewGameButtonPressed"]

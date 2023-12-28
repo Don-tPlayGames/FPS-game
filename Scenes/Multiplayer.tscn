@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://bagexjxta1jrv"]
+
+[ext_resource type="Script" path="res://Scenes/UIMainMenu/JoinToServerButton.cs" id="1_k0rix"]
+[ext_resource type="Script" path="res://Scenes/UIMainMenu/MultiplayerMenu.cs" id="1_ufvks"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ufvks")
+
+[node name="InputServerName" type="TextEdit" parent="."]
+layout_mode = 0
+offset_left = 416.0
+offset_top = 152.0
+offset_right = 736.0
+offset_bottom = 192.0
+placeholder_text = "Server name"
+
+[node name="InputIPAddress" type="TextEdit" parent="."]
+layout_mode = 0
+offset_left = 416.0
+offset_top = 232.0
+offset_right = 736.0
+offset_bottom = 272.0
+placeholder_text = "IpAddress"
+
+[node name="InputPort" type="TextEdit" parent="."]
+layout_mode = 0
+offset_left = 416.0
+offset_top = 312.0
+offset_right = 736.0
+offset_bottom = 352.0
+placeholder_text = "Port"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 512.0
+offset_top = 384.0
+offset_right = 640.0
+offset_bottom = 416.0
+text = "JOIN"
+script = ExtResource("1_k0rix")
+
+[connection signal="pressed" from="Button" to="Button" method="OnPressedJoinToServer"]
