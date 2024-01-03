@@ -29,12 +29,12 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     public float Vertical { get; private set; }
     public float Horizontal { get; private set; }
     
-    public float Sprint { get; private set; }
+    public bool Sprint { get; private set; }
 
-    public event Action Crouch;
-    public event Action Crawl;
+    public event Action OnCrouchKeyPressed;
+    public event Action OnCrawlKeyPressed;
     
-    public event Action Jump;
+    public event Action OnJumpKeyPressed;
     
     public float MouseX { get; private set; }
     public float MouseY { get; private set; }
@@ -45,6 +45,8 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     public override void _Ready()
     {
         Init();
+        
+        Godot.Input.MouseMode = Godot.Input.MouseModeEnum.Captured;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -58,6 +60,19 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
         if (@event is InputEventMouseMotion mouseMotionEvent)
         {
             _mousePositionCur = mouseMotionEvent.Relative;
+        }
+        
+        if (@event is InputEventKey)
+        {
+            if(Godot.Input.IsActionJustPressed("ui_cancel"))
+                if(Godot.Input.MouseMode == Godot.Input.MouseModeEnum.Captured)
+                    Godot.Input.MouseMode = Godot.Input.MouseModeEnum.Visible;
+        }
+
+        if (@event is InputEventMouseButton && @event.IsPressed())
+        {
+            if(Godot.Input.MouseMode == Godot.Input.MouseModeEnum.Visible)
+                Godot.Input.MouseMode = Godot.Input.MouseModeEnum.Captured;
         }
     }
 
@@ -85,13 +100,13 @@ public partial class PlayerInputManager : Godot.Node, IMovementInputMap, ICamera
     {
         UpdateBasicMovement();
 
-        Sprint = Godot.Input.GetActionStrength("Sprint");
+        Sprint = Godot.Input.IsActionPressed("Sprint");
 
-        if (Godot.Input.IsActionJustPressed("Crouch")) { Crouch?.Invoke(); }
+        if (Godot.Input.IsActionJustPressed("Crouch")) { OnCrouchKeyPressed?.Invoke(); }
         
-        if (Godot.Input.IsActionJustPressed("Crawl")) { Crawl?.Invoke(); }
+        if (Godot.Input.IsActionJustPressed("Crawl")) { OnCrawlKeyPressed?.Invoke(); }
         
-        if (Godot.Input.IsActionJustPressed("Jump")) { Jump?.Invoke(); }
+        if (Godot.Input.IsActionJustPressed("Jump")) { OnJumpKeyPressed?.Invoke(); }
     }
 
     private void UpdateBasicMovement()

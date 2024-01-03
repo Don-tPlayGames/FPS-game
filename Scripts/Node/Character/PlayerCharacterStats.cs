@@ -6,6 +6,9 @@ namespace FPSgame.Scripts.Node.Character;
 public partial class PlayerCharacterStats : Godot.Node, ICharacterBodyStats, ICharacterPhysicalStats
 {
     [Export] public float Mass { get; internal set; } = 70.0f;
+    [Export] public float EyeHeightNormal { get; internal set; } = 1.65f;
+    [Export] public float EyeHeightCrouch { get; internal set; } = 0.75f;
+    [Export] public float EyeHeightCrawl { get; internal set; } = 0.3f;
 
 
     [Export] public float BaseSpeed { get; internal set;  } = 5.0f;

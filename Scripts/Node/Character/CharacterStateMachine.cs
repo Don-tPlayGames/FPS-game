@@ -1,4 +1,4 @@
-﻿namespace FPSgame.Scripts.Node.Character;
+namespace FPSgame.Scripts.Node.Character;
 
 public partial class CharacterStateMachine : NodeStateMachine<CharacterState>
 {

@@ -9,7 +9,6 @@ public partial class CharacterState : StateNode<CharacterStateMachine>
     [Export] protected NodePath CollisionShapePath;
 
     [Export] protected float CharacterEyeHeight;
-    [Export] protected Curve EyeHeightInterpolationCurve = new ();
 
     public virtual float EyeHeight => CharacterEyeHeight;
     public virtual bool CanMove => true;

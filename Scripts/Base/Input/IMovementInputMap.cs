@@ -7,10 +7,10 @@ public interface IMovementInputMap
     float Vertical { get; }
     float Horizontal { get; }
     
-    float Sprint { get; }
+    bool Sprint { get; }
 
-    event Action Crouch;
-    event Action Crawl;
+    event Action OnCrouchKeyPressed;
+    event Action OnCrawlKeyPressed;
     
-    event Action Jump;
+    event Action OnJumpKeyPressed;
 }
