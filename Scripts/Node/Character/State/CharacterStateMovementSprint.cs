@@ -1,13 +1,31 @@
-﻿using FPSgame.Scripts.Node.Extension;
+﻿using FPSgame.Scripts.Base.Character.Attributes;
+using FPSgame.Scripts.Node.Extension;
 using Godot;
 
 namespace FPSgame.Scripts.Node.Character.State;
 
 public partial class CharacterStateMovementSprint : CharacterStateMovementAbstract
 {
-    protected override Vector3 CalculateVelocity()
+    private AttributeModifier _speedModifier;
+    
+    public override void Enter()
     {
-        return base.CalculateVelocity() * Context.Character.Stats.SprintSpeedMul;
+        base.Enter();
+
+        if (_speedModifier is null)
+            _speedModifier = new AttributeModifier(
+                Context.Character.Stats.SprintSpeedMul,
+                AttributeModifier.ModifierOperation.Multiply);
+
+        Context.Character.Stats.MovementSpeed.AddModifier(_speedModifier);
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        
+        if (_speedModifier is not null)
+            Context.Character.Stats.MovementSpeed.RemoveModifier(_speedModifier);
     }
 
     public override void PhysicsUpdate(double deltaTime)

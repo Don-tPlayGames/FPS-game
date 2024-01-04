@@ -17,6 +17,7 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4i7st"]
 radius = 0.3
+height = 1.8
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qa8m4"]
 radius = 0.3
@@ -26,9 +27,10 @@ height = 1.2
 radius = 0.3
 height = 0.6
 
-[node name="Character" type="CharacterBody3D" groups=["Player"]]
+[node name="Character" type="CharacterBody3D" node_paths=PackedStringArray("StandUpCheckRaycast") groups=["Player"]]
 script = ExtResource("1_c3fdo")
 _camera = NodePath("CameraPivotYaw")
+StandUpCheckRaycast = NodePath("RayCast3D")
 
 [node name="Stats" type="Node" parent="."]
 script = ExtResource("2_xl18k")
@@ -77,7 +79,7 @@ script = ExtResource("12_gch5k")
 script = ExtResource("13_qgb32")
 
 [node name="CollisionShapeStanding" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_4i7st")
 
 [node name="CollisionShapeCrouching" type="CollisionShape3D" parent="."]
@@ -89,6 +91,9 @@ disabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 shape = SubResource("CapsuleShape3D_601oh")
 disabled = true
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, 1.8, 0)
 
 [node name="CameraPivotYaw" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)

@@ -14,7 +14,7 @@ public abstract partial class CharacterStateMovementAbstract : AbstractCharacter
 
     protected virtual Vector3 CalculateVelocity()
     {
-        return Context.CharacterController.HorizontalMovement * Context.Character.Stats.BaseSpeed;
+        return Context.CharacterController.HorizontalMovement * Context.Character.Stats.MovementSpeed.CurrentValue;
     }
 
     protected virtual void Move()

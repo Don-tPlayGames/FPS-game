@@ -13,6 +13,9 @@ public partial class CharacterBasic : CharacterBody3D
 	[Export] private NodePath _camera;
 	protected ICamera Camera;
 
+	//TODO: make proper collision masks
+	[Export] protected RayCast3D StandUpCheckRaycast;
+
 	public bool IsGravityApplied { get; internal set; } = true;
 
 	//TODO: replace with abstraction
@@ -105,5 +108,12 @@ public partial class CharacterBasic : CharacterBody3D
 	public bool CanJump()
 	{
 		return JumpCooldownTimer <= 0.0d && IsOnFloor();
+	}
+
+	public bool CanStandUp(float requiredHeight)
+	{
+		StandUpCheckRaycast.TargetPosition = new Vector3(0.0f, requiredHeight, 0.0f);
+		StandUpCheckRaycast.ForceRaycastUpdate();
+		return !StandUpCheckRaycast.IsColliding();
 	}
 }
