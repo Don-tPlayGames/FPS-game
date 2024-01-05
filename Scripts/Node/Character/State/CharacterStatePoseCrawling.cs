@@ -41,16 +41,23 @@ public partial class CharacterStatePoseCrawling : CharacterStatePoseBasic
 
     protected override void OnSwitchCrawl()
     {
-        if (!Context.Character.CanStandUp(Context.Character.Stats.Height))
-            return;
-        
-        CurrentSuperState?.SwitchSubState(typeof(CharacterStatePoseStanding));
+        TryStandUp();
     }
 
     protected override void OnJump()
     {
+        TryStandUp();
+    }
+
+    protected virtual void TryStandUp()
+    {
         if (!Context.Character.CanStandUp(Context.Character.Stats.Height))
+        {
+            if (Context.Character.CanStandUp(Context.Character.Stats.HeightCrouching))
+                CurrentSuperState?.SwitchSubState(typeof(CharacterStatePoseCrouching));
+            
             return;
+        }
         
         CurrentSuperState?.SwitchSubState(typeof(CharacterStatePoseStanding));
     }

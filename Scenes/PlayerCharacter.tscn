@@ -35,6 +35,7 @@ StandUpCheckRaycast = NodePath("RayCast3D")
 [node name="Stats" type="Node" parent="."]
 script = ExtResource("2_xl18k")
 JumpHeight = 1.0
+JumpCooldown = 0.1
 
 [node name="Controller" type="Node" parent="."]
 script = ExtResource("3_e4lyb")
@@ -98,6 +99,7 @@ target_position = Vector3(0, 1.8, 0)
 [node name="CameraPivotYaw" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
 script = ExtResource("3_trlgo")
+_interpolationWeight = 0.4
 
 [node name="CameraPivotPitch" type="Node3D" parent="CameraPivotYaw"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.15)
