@@ -1,10 +1,13 @@
-﻿namespace FPSgame.Scripts.Base.Character;
+﻿namespace FPSgame.Scripts.Base.Character.Attributes;
 
 public interface ICharacterPhysicalStats
 {
-    float BaseSpeed { get; }
+    AttributeFloat MovementSpeed { get; }
+    
     float SprintSpeedMul { get; }
+    
     float CrouchSpeedMul { get; }
+    float CrawlSpeedMul { get; }
     
     float JumpVelocity { get; }
     float JumpCooldown { get; }
