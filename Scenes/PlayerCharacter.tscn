@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://b8ogtusowotd6"]
+[gd_scene load_steps=19 format=3 uid="uid://b8ogtusowotd6"]
 
 [ext_resource type="Script" path="res://Scripts/Node/Character/CharacterBasic.cs" id="1_c3fdo"]
+[ext_resource type="PackedScene" uid="uid://bfslfp84d40yg" path="res://Scenes/YBotSplit.tscn" id="2_mqwfg"]
 [ext_resource type="Script" path="res://Scripts/Node/Character/PlayerCharacterStats.cs" id="2_xl18k"]
 [ext_resource type="Script" path="res://Scripts/Node/Character/PlayerController.cs" id="3_e4lyb"]
 [ext_resource type="Script" path="res://Scripts/Node/Character/FirstPersonCamera.cs" id="3_trlgo"]
@@ -31,6 +32,8 @@ height = 0.6
 script = ExtResource("1_c3fdo")
 _camera = NodePath("CameraPivotYaw")
 StandUpCheckRaycast = NodePath("RayCast3D")
+
+[node name="CharacterMesh" parent="." instance=ExtResource("2_mqwfg")]
 
 [node name="Stats" type="Node" parent="."]
 script = ExtResource("2_xl18k")
@@ -99,7 +102,9 @@ target_position = Vector3(0, 1.8, 0)
 [node name="CameraPivotYaw" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
 script = ExtResource("3_trlgo")
+_pitchJointOffset = Vector3(0, 0.2, -0.25)
 _interpolationWeight = 0.4
+_shakeGain = Vector3(0.07, 0.15, 0.07)
 
 [node name="CameraPivotPitch" type="Node3D" parent="CameraPivotYaw"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.15)

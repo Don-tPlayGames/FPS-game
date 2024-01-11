@@ -11,4 +11,6 @@ public interface ICamera
     void SetFieldOfView(float degrees);
     
     void ResetFieldOfView();
+
+    void SetHeadBob(float power);
 }

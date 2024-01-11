@@ -1,5 +1,7 @@
 using System;
+using FPSgame.Scripts.Node.Animation.Character.Player;
 using FPSgame.Scripts.Node.Character.Camera;
+using FPSgame.Scripts.Node.Extension;
 using Godot;
 
 namespace FPSgame.Scripts.Node.Character;
@@ -18,8 +20,9 @@ public partial class CharacterBasic : CharacterBody3D
 
 	public bool IsGravityApplied { get; internal set; } = true;
 
-	//TODO: replace with abstraction
+	//TODO: replace these things with abstraction
 	public PlayerCharacterStats Stats { get; private set; }
+	public AnimatedCharacterModel Model { get; private set; }
 
 	protected double JumpCooldownTimer = 0.0d;
 
@@ -27,11 +30,18 @@ public partial class CharacterBasic : CharacterBody3D
 	
 	public event Action OnReady;
 
+	public event Action OnLand;
+	public event Action OnStartFalling;
+
+	private bool _groundedLastTick = false;
+
 	public override void _Ready()
 	{
 		Camera = GetNode<ICamera>(_camera);
 		
 		Stats = GetNode<PlayerCharacterStats>("Stats");
+		
+		Model = GetNode<AnimatedCharacterModel>("CharacterMesh");
 		
 		OnReady?.Invoke();
 	}
@@ -67,6 +77,8 @@ public partial class CharacterBasic : CharacterBody3D
 		Velocity = Velocity.Lerp(
 			to: new Vector3(TargetVelocity.X, Velocity.Y, TargetVelocity.Y),
 			weight: (float)deltaTime * (IsOnFloor() ? _movementResponsiveness : _inAirMovementResponsiveness));
+
+		Model.SetMotionRelatively(Velocity.ToVector3Horizontal() / Stats.MovementSpeed.CurrentValue);
 	}
 
 	private void HandleGravity(double deltaTime)
@@ -77,8 +89,29 @@ public partial class CharacterBasic : CharacterBody3D
 
 	private void TickGravity(double deltaTime)
 	{
-		if (!IsOnFloor())
+		bool grounded = IsOnFloor();
+		
+		if (!grounded)
+		{
 			Velocity = new Vector3(Velocity.X, Velocity.Y - WorldSettings.Physics.GlobalGravity * (float)deltaTime, Velocity.Z);
+		}
+
+		if (grounded != _groundedLastTick)
+		{
+			UpdateGrounded(grounded);
+		}
+	}
+
+	private void UpdateGrounded(bool newValue)
+	{
+		if (newValue) OnLand?.Invoke();
+		else OnStartFalling?.Invoke();
+		
+		Model.SetGrounded(newValue);
+		Model.SetFalling(!newValue);
+		Model.SetJumping(!newValue);
+			
+		_groundedLastTick = newValue;
 	}
 
 	private void UpdateJumpTimer(double deltaTime)
@@ -95,6 +128,8 @@ public partial class CharacterBasic : CharacterBody3D
 	public void PerformJump()
 	{
 		Velocity = new Vector3(Velocity.X, Stats.JumpVelocity, Velocity.Z);
+		Model.SetJumping(true);
+		Model.SetGrounded(false);
 	}
 
 	public bool TryPerformJump()
